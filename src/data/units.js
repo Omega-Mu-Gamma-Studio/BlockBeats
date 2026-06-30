@@ -1,0 +1,68 @@
+// Open-browsing model: every unit is visible. requiredLevel just decides
+// whether it's dimmed/"preview" or fully playable — nothing is hard-locked.
+export const UNITS = [
+  {
+    id: 'unit-1',
+    title: 'The Beat',
+    subtitle: 'Rhythm, drums, the pocket',
+    icon: 'ti-circle-dot',
+    requiredLevel: 1,
+    lessons: ['1-1', '1-2', '1-3', '1-4', '1-5'],
+  },
+  {
+    id: 'unit-2',
+    title: 'The Bassline',
+    subtitle: 'Root notes, groove, low end',
+    icon: 'ti-wave-sine',
+    requiredLevel: 1,
+    lessons: ['2-1', '2-2', '2-3', '2-4'],
+  },
+  {
+    id: 'unit-3',
+    title: 'Chords & Harmony',
+    subtitle: 'Stacking notes that work together',
+    icon: 'ti-stack-2',
+    requiredLevel: 2,
+    lessons: ['3-1', '3-2', '3-3', '3-4', '3-5'],
+  },
+  {
+    id: 'unit-4',
+    title: 'Melody',
+    subtitle: 'Writing a line people remember',
+    icon: 'ti-music',
+    requiredLevel: 3,
+    lessons: ['4-1', '4-2', '4-3'],
+  },
+  {
+    id: 'unit-5',
+    title: 'Arrangement',
+    subtitle: 'Turning a loop into a song',
+    icon: 'ti-layout-grid',
+    requiredLevel: 4,
+    lessons: ['5-1', '5-2', '5-3', '5-4'],
+  },
+];
+
+export const LESSON_TITLES = {
+  '1-1': 'What is a beat?',
+  '1-2': 'Kick and snare',
+  '1-3': 'Hi-hats and groove',
+  '1-4': 'Swing and feel',
+  '1-5': 'Build your first loop',
+  '2-1': 'Why bass matters',
+  '2-2': 'Root notes',
+  '2-3': 'Locking with the kick',
+  '2-4': 'Basslines with movement',
+  '3-1': 'What is a chord?',
+  '3-2': 'Major vs minor',
+  '3-3': 'Chord progressions',
+  '3-4': 'Voicing and inversions',
+  '3-5': 'Tension and release',
+  '4-1': 'Scales as a toolbox',
+  '4-2': 'Phrasing a melody',
+  '4-3': 'Call and response',
+  '5-1': 'Verse vs chorus energy',
+  '5-2': 'Transitions and fills',
+  '5-3': 'Arranging a full track',
+  '5-4': 'Mixdown basics',
+};
