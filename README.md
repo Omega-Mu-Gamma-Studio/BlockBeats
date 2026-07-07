@@ -18,7 +18,7 @@ This section is honest about where the repo is today vs. the plan below it. Upda
 | `Home.jsx`, `UnitPage.jsx`, `LessonPage.jsx`, `Shop.jsx` | ✅ Built | Pages exist and render; lesson *content* inside them is not wired to real lesson JSON yet |
 | `progressStore.js` (XP, coins, completed lessons, unit progress) | ✅ Built | Already diverged from early plan — see §6 |
 | `lessonStore.js` | ⚠️ Built, needs rework | Currently drives a single companion's expression + dialogue bubble. Does **not** yet track lesson phase (now 6 phases, not 3) / attempts / user-placed blocks, and doesn't yet support two mascots at once — see §5 |
-| `Companion.jsx` (the character) | ⚠️ Built, needs rework | Single-mascot component — needs to become the twin system (Feel + Logic) described in §5. Base sprite set only; no outfit-based sprite swapping wired in yet, even though `equippedOutfit` exists in the store |
+| `Companion.jsx` (the character) | ⚠️ Built, needs rework | Single-mascot component — needs to become the Melody/Harmony twin system described in §5. No twin portrait assets exist yet (8 PNGs needed: 4 per twin) |
 | `data/units.js` | ✅ Built, needs expansion | Currently 5 units / 21 lessons. Full 6-unit / 75-lesson list is locked (§3) — still needs transcribing into this file |
 | `data/shopItems.js` | ✅ Built | Wallpapers + gear, cosmetic-accent only (no alt sprites yet) |
 | Lesson JSON files (per-lesson content) | ❌ Not started | Zero lesson JSON files exist yet — only the unit/lesson-title index |
@@ -188,50 +188,224 @@ Practically, this means `BTSRenderer.js` / `PianoRoll.js` / `WaveformView.js` / 
 
 ---
 
-## 5. The Twins — Feel & Logic
+## 5. The Twins — Melody & Harmony
 
-This replaces the single-companion model from earlier planning. **Not settled yet: names, gender/casting, and final personality details** — that's intentionally left to the studio's creative direction, not locked here. What *is* locked is the mechanic.
+Locked. Names, casting, art direction, dialogue style, and expression set are final — this replaces the earlier "Feel/Logic, unnamed" placeholder.
 
-**The axis:** every concept in the syllabus gets explained twice, by two mascots with opposing but equally valid philosophies:
+### Core Identity
 
-- **Feel** — the intuitive, emotional, body-first explainer. Talks in metaphor, sensation, vibe. ("This chord feels like it's falling.")
-- **Logic** — the structural, technical explainer. Talks in pattern, function, why-it-works. ("This is the vi chord — it borrows the tonic's notes, which is why it still feels like home.")
+| Aspect | Melody | Harmony |
+|---|---|---|
+| Name | Melody | Harmony |
+| Japanese | メロディ (Merodī) | ハーモニ (Hāmoni) |
+| Nationality | German | German (twin) |
+| Role | The Feel — emotion, intuition, passion | The Logic — structure, precision, analysis |
+| Philosophy | "How does this feel?" | "Why does this work?" |
+| Voice | Warm, expressive, slightly theatrical | Cool, precise, slightly dry |
+| Accent | Soft German, melodic, romantic | Crisp German, measured, amused |
 
-Neither twin is "the real one" or "the bonus one" — they always appear together in the `explanation` phase (§3), back to back, same concept, two lenses. This is deliberate: contrast is what makes a concept stick for a beginner, and it means every one of the 75 lessons needs **two** metaphors written for it, not one.
+### Appearance
 
-**Art direction:** gothic ink-wash, modern take — muted/monochrome ink-wash technique with a pop of modern neon/color accent (rather than fully desaturated traditional ink wash). Distinct from the flat sprite-based style used elsewhere in the studio's Chan apps.
+| Element | Melody | Harmony |
+|---|---|---|
+| Hair | Long, flowing, slightly messy, warm brown with pink undertones | Neat, shorter, sharp cut, dark with cyan undertones |
+| Eyes | Warm amber/gold, expressive, slightly larger | Cool silver/blue, focused, slightly narrower |
+| Posture | Open, animated, gestures with hands | Controlled, precise, still hands |
+| Style | Flowing fabrics, slightly disheveled, warm tones | Structured clothing, neat, cool tones |
+| Signature | Always has a pen tucked behind her ear | Always has a notebook or tablet |
+| Color Accent | Neon Pink `#FF6B9D` | Neon Cyan `#00D4FF` |
+| Expression Set | Warm, dramatic, emotional | Analytical, amused, precise |
 
-**Open design questions, deliberately not decided here:**
-- Do Feel and Logic ever disagree or banter with each other, or do they always agree and just phrase things differently?
-- How many expressions does each twin need, and do they share an expression set or have their own?
-- Does the `bad_example` phase have a "twin opinion" on the failure (e.g. Logic explaining *why* it's wrong, Feel reacting to how *bad* it sounds), or is it presented more neutrally?
+### Sprites — 8 total (4 per twin), locked
 
-**Current code reality:** the existing `Companion.jsx` is a single-mascot component (sprite + dialogue bubble driven by `lessonStore`). It needs to become two components (or one component with a `twin` prop) before any of this can be built — this is a rebuild, not an extension, of what exists today.
+Each portrait is a full illustrated scene (background + mood), not a bare face — which is why 4 expressions each is the right count, not a limitation. More states would dilute the per-portrait presence, not add to it.
+
+| Melody | Harmony |
+|---|---|
+| `melody-neutral.png` | `harmony-neutral.png` |
+| `melody-teaching.png` | `harmony-teaching.png` |
+| `melody-excited.png` | `harmony-intrigued.png` |
+| `melody-thinking.png` | `harmony-analyzing.png` |
+
+Art style: monochrome ink-wash illustration base, single neon accent color per twin, transparent PNG background with subtle ink splatter, 512×512px.
+
+Expression details:
+
+| State | Melody | Harmony |
+|---|---|---|
+| Neutral | Calm, open, warm smile, waiting | Composed, observant, slight smile, waiting |
+| Teaching | Passionate, animated, gesturing, eyes bright | Precise, pointing, explaining, focused |
+| Excited / Intrigued | Big smile, bright eyes, hands clasped | Small smile, raised eyebrow, "Hmm." |
+| Thinking / Analyzing | Searching skyward, hand on chin, dreaming | Reading, calculating, tapping chin |
+
+### Dialogue Style
+
+| Aspect | Melody | Harmony |
+|---|---|---|
+| Tone | Warm, emotional, metaphorical | Cool, logical, literal |
+| German words | Used for emphasis, ~10% of dialogue | Same, ~10% of dialogue |
+| Metaphors | Feeling-first ("this chord is the sky falling") | Function-first ("this is the vi chord — the relative minor") |
+| Encouragement | Warm, exclamatory | Precise, measured praise |
+| Frustration | Warm but exasperated | Dry, blunt correction |
+| Humor | Warm, playful, slightly chaotic | Dry, sarcastic, amused |
+
+### The Dynamic
+
+They're twins — one origin, two philosophies. They don't argue and they don't compete; they contrast. Melody always speaks first in the `explanation` phase and gives the feeling; Harmony follows with the structure. They finish each other's sentences over time, and their contrasting metaphors become running inside jokes across lessons rather than one-off lines.
+
+Lore (optional, background flavor — not required for any mechanic): raised together in Germany, trained under different teachers with different philosophies — Melody in Berlin, where the feeling of music lives; Harmony in Leipzig, where the structure of music lives. They've come back to teach together, as a duet.
+
+### Current code reality
+
+`Companion.jsx` is still a single-mascot component. It needs to become a twin-aware system (two sprite sets, `melody-*` / `harmony-*`, both wired to speak in sequence during `explanation`) before any of this can render — this is a rebuild, not an extension, of what exists today.
 
 ---
 
-## 6. State — Stores (as they actually are, not as originally planned)
+## 6. UI Theme — Ink Wash Gothic Neon
+
+Locked, alongside the twins — this is the visual language for the whole app, not just the twins' portraits.
+
+### Color Palette
+
+| Element | Hex | Name | Usage |
+|---|---|---|---|
+| Background | `#0A0A0F` | Void Black | Main background |
+| Card Background | `#1A1A24` | Ink Wash | Cards, panels |
+| Borders | `#2A2A3A` | Dry Ink | Dividers, outlines |
+| Melody Accent | `#FF6B9D` | Neon Pink | Melody's glow, buttons, highlights |
+| Harmony Accent | `#00D4FF` | Neon Cyan | Harmony's glow, buttons, highlights |
+| Warm Glow | `#FFB347` | Amber | Playhead, hover states, warmth |
+| Text Primary | `#F5F0EB` | Bone White | Main text |
+| Text Secondary | `#8A8A9A` | Ghost Grey | Subtext, metadata |
+| Melody Glow | `#FF6B9D33` | Pink Shadow | 20% opacity aura |
+| Harmony Glow | `#00D4FF33` | Cyan Shadow | 20% opacity aura |
+
+### Visual Principles
+
+| Element | Ink Wash | Neon |
+|---|---|---|
+| Backgrounds | Splatter textures, irregular edges | Subtle glow behind key elements |
+| Typography | Hand-drawn brushstroke headings | Neon accent on key words |
+| Borders | Irregular, organic, ink-bleed edges | Sharp, precise lines with glow |
+| Sprites | Monochrome ink wash + accent glow | Melody: pink / Harmony: cyan |
+| UI Elements | Ink splatters as decoration | Neon outlines on active states |
+| Dialogue | Ink-bleed edge bubbles | Glowing text on key phrases |
+
+### Layout Structure
+
+App header (logo, XP, level) sits above a two-column layout: a left sidebar listing all 6 units with per-unit twin-color completion indicators, and a main content area holding the lesson title + phase indicator, the twin dialogue boxes (Melody's line, then Harmony's line, each in their own accent-bordered bubble), transport controls, and the BTS/Konva canvas (piano roll / waveform / effects tabs) beneath it. A bottom bar carries overall progress, transport, and XP display.
+
+### Component Specs
+
+- **App Shell** — `#0A0A0F` background with subtle ink-splatter SVG texture; page transitions are an ink-bleed dissolve (300ms); brushstroke headings + clean sans-serif body text.
+- **Sidebar** — `#1A1A24` ink-wash texture, organic brushstroke border; units show twin-color completion indicators (neon checkmark = done, twin accent glow = active, ghost grey = dimmed/preview); ink-wash progress bar with glow.
+- **Lesson Header** — brushstroke title in bone white; monospace ghost-grey metadata (e.g. `BPM 120 • 4/4`); phase indicator as 1–6 ink-wash-style dots; small circular twin avatars with glow.
+- **Dialogue Box** — ink-wash card, irregular edges; speaker name in that twin's accent color with neon glow; German words highlighted in accent color; small twin sprite beside the text; ink-bleed dissolve between lines.
+- **Block Palette (Test phase)** — ink-stroke outlines with drag handles, color-coded by block type (chord/drum/melody); neon glow in twin accent color while dragging; ghost-grey ink-wash tooltips.
+- **Timeline (Test phase)** — ink-wash grid lines with subtle glow; amber (`#FFB347`) playhead; dropped blocks color-coded with neon borders; magnetic snap with a subtle pulse.
+- **BTS View (Konva canvas)** — `#0A0A0F` background with subtle grid; piano roll notes in pink (melody) / cyan (harmony); ink-wash waveform with amber glow; effect chain as neon node connections; standard zoom/scroll/playhead controls.
+- **Transport Bar** — brushstroke play/stop buttons with neon glow; monospace ghost-grey BPM display; ink-wash progress bar; amber glow on tempo tap.
+- **Shop Page** — ink-wash gallery layout; ink-bleed-bordered item cards; unlocked items get twin-accent neon glow, locked items are ghost-grey with an ink-wash overlay; brushstroke equip button with glow.
+- **Domain Expansion (level-up)** — ink-explosion SVG background effect; brushstroke bone-white text with neon glow; pink + cyan confetti particles; auto-dismisses after 3 seconds.
+
+### Typography
+
+| Use | Font Style | Size | Color |
+|---|---|---|---|
+| App Title | Brushstroke | 28px | Bone White + Neon Glow |
+| Lesson Title | Brushstroke | 24px | Bone White |
+| Unit Name | Serif, irregular | 18px | Bone White |
+| Dialogue | Sans-serif | 16px | Bone White |
+| Emphasis Word | Sans-serif, bold | 16px | Twin Accent |
+| Metadata | Monospace | 12px | Ghost Grey |
+| Button Text | Sans-serif | 14px | Bone White |
+
+### Animation
+
+| Element | Animation | Duration |
+|---|---|---|
+| Page Transition | Ink-bleed dissolve | 300ms |
+| Dialogue Advance | Fade + slide up | 200ms |
+| Twin Switch | Fade + ink-bleed | 300ms |
+| Block Drag | Glow + follow cursor | Instant |
+| Drop Block | Ink-splash effect | 200ms |
+| Transport Play | Amber glow pulse | 500ms |
+| Domain Expansion | Ink explosion + confetti | 3000ms |
+| Hover State | Neon glow | 200ms |
+
+### CSS Variables (starting point)
+
+```css
+:root {
+  /* Backgrounds */
+  --color-void: #0A0A0F;
+  --color-ink: #1A1A24;
+  --color-dry-ink: #2A2A3A;
+
+  /* Twins */
+  --color-melody: #FF6B9D;
+  --color-harmony: #00D4FF;
+  --color-amber: #FFB347;
+
+  /* Text */
+  --color-bone: #F5F0EB;
+  --color-ghost: #8A8A9A;
+
+  /* Glows */
+  --glow-melody: 0 0 30px rgba(255, 107, 157, 0.3);
+  --glow-harmony: 0 0 30px rgba(0, 212, 255, 0.3);
+  --glow-amber: 0 0 30px rgba(255, 179, 71, 0.3);
+}
+
+.neon-melody {
+  color: var(--color-melody);
+  text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+}
+
+.neon-harmony {
+  color: var(--color-harmony);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.dialogue-melody {
+  background: var(--color-ink);
+  border-left: 4px solid var(--color-melody);
+  box-shadow: var(--glow-melody);
+}
+
+.dialogue-harmony {
+  background: var(--color-ink);
+  border-left: 4px solid var(--color-harmony);
+  box-shadow: var(--glow-harmony);
+}
+```
+
+Ink-wash textures and ink-bleed borders (splatter SVGs, irregular border-image slices) still need actual SVG assets — the CSS above references them but they don't exist as files yet.
+
+---
+
+## 7. State — Stores (as they actually are, not as originally planned)
 
 The original plan called for three stores split as progress / lesson / audio. Reality diverged slightly:
 
 - **`progressStore.js`** — XP, coins, `completedLessons` (object map, not array), equipped wallpaper/outfit, `lastVisited`. Level is **derived**, not stored: `getLevel()` computes `floor(xp / 150) + 1`, uncapped. At a ~25 XP/lesson average across 75 lessons (~1,875 XP total), this comfortably spans well past level 10 without hitting an artificial ceiling — no rescaling needed for the 75-lesson target.
-- **`lessonStore.js`** — currently just companion expression + dialogue. Still needs: current lesson, current phase (1/2/3), attempt count, last result, user-placed blocks, dialogue line index, hints shown. This is the real gap — the phase state machine described in the original build guide doesn't exist yet.
+- **`lessonStore.js`** — currently just companion expression + dialogue, and only for one mascot. Still needs: current lesson, current phase (1–6, not 1–3), attempt count, last result, user-placed blocks, dialogue line index, hints shown, and support for driving two twins' expressions/dialogue independently. This is the real gap — the phase state machine described in the original build guide doesn't exist yet.
 - **`audioStore.js`** — stub, not started. Will hold Transport state, BPM, playback status once `audioEngine.js` exists.
 
 ---
 
-## 7. Folder Structure
+## 8. Folder Structure
 
 ```
 BlockBeats/
 ├── public/
 │   ├── audio/            # drums, sample packs (lo-fi / EDM / hip-hop)
-│   ├── sprites/          # companion art (base set exists; outfit sets planned)
+│   ├── sprites/          # twin portraits (melody-*.png, harmony-*.png) — not yet created
 │   └── wallpapers/       # Shop-unlockable backgrounds
 │
 ├── src/
 │   ├── components/
-│   │   ├── character/    # Companion.jsx
+│   │   ├── character/    # Companion.jsx — needs rebuild into twin-aware system
 │   │   ├── blocks/       # BlockPalette, BlockItem, Timeline, DroppedBlock — stub
 │   │   ├── lesson/       # LessonCanvas, PhaseIndicator, DialogueBox, HintSystem, BTSPanel — stub
 │   │   ├── bts/          # BTSView, PianoRoll, WaveformView, EffectChain — stub, doubles as mini DAW UI
@@ -240,7 +414,7 @@ BlockBeats/
 │   │
 │   ├── data/
 │   │   ├── lessons/      # per-lesson JSON, organized unit1..unit6 — not started
-│   │   ├── units.js      # unit + lesson-title index — 21/75 lessons drafted
+│   │   ├── units.js      # unit + lesson-title index — 21/75 lessons drafted, full 75 locked (§3)
 │   │   ├── shopItems.js  # wallpapers + gear
 │   │   └── presets/      # hiphop / edm / lofi audio presets — not started
 │   │
@@ -255,20 +429,21 @@ BlockBeats/
 
 ---
 
-## 8. Build Order
+## 9. Build Order
 
 Roughly the order that unblocks the most downstream work first:
 
 1. **Audio foundation** — `audioEngine.js` (Tone.js singleton), `musicTheoryEngine.js` (chords/scales/progressions), wire a single chord to play on a button click.
 2. **Blocks + DnD** — block type definitions, palette, timeline as a drop target, basic exact-match validation.
-3. **Twins + lesson state machine** — rebuild `Companion.jsx` into the Feel/Logic twin system (§5), rework `lessonStore` (or a sibling store) to track the 6-phase structure (§3) plus attempts/blocks, then wire `LessonCanvas`, `DialogueBox`, `PhaseIndicator`, `HintSystem` against it.
+3. **Twins + lesson state machine** — rebuild `Companion.jsx` into the Melody/Harmony twin system (§5), rework `lessonStore` (or a sibling store) to track the 6-phase structure (§3) plus attempts/blocks, then wire `LessonCanvas`, `DialogueBox`, `PhaseIndicator`, `HintSystem` against it.
 4. **First real lesson** — pick one lesson from Unit 1, write its JSON across all 6 phases, get it working end-to-end with real audio, both twins, and real Test validation. This is the proof that the whole pipeline works before scaling to 75.
 5. **BTS / mini DAW** — Konva renderers, starting with `PianoRoll` (chord/melody) and `WaveformView` (drums), built with both lesson-scoped and free-play modes in mind from the start (§4). `EffectChain` comes with Unit 6 mechanics.
-6. **Progression polish** — Domain Expansion, companion outfit-swapping, Shop wiring.
-7. **Content** — the other 74 lesson JSONs, sprite art for outfits, audio presets.
+6. **UI theme pass** — ink-wash textures/SVG assets, neon glow CSS, brushstroke typography (§6) applied across the app shell, sidebar, dialogue boxes, and transport bar.
+7. **Progression polish** — Domain Expansion, twin sprite integration into Shop-driven cosmetics, Shop wiring.
+8. **Content** — the other 74 lesson JSONs (both twins' dialogue for each), the 8 twin portrait PNGs, audio presets.
 
 ---
 
-## 9. Contributing
+## 10. Contributing
 
 Read the actual source before writing new code — several things here (stores, companion naming, XP formula) have already drifted from earlier planning docs, and this README reflects the current real state, not the original pitch. Favor incremental patches over rewrites. Architecture/design discussion before implementation, always.
