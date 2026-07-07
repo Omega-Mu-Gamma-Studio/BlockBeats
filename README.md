@@ -1,8 +1,8 @@
 # 🎵 BlockBeats
 
-Drag-and-drop music theory & production, taught the same way Java-Chan and GateLab teach code and circuits: **See It Work → See It Break → You Try**, with a Behind-The-Scenes view that shows what's really happening under the hood — except here, "under the hood" is a real DAW (piano roll, waveform, effect chain), not a debugger.
+Drag-and-drop music theory & production for total beginners, taught by twin mascots who explain everything through two opposing lenses — **Feel** and **Logic** — so every concept lands twice, two different ways, before you're asked to try it yourself.
 
-BlockBeats teaches the *whole* song: rhythm, bass, harmony, melody, arrangement, **and** production/mixing. It's not a music-theory quiz app — it's meant to take someone from "what's a beat" to "I mixed a track," using blocks instead of a mouse-and-plugin DAW.
+BlockBeats teaches the *whole* song: rhythm, bass, harmony, melody, arrangement, **and** production/mixing. It's not a music-theory quiz app — it's meant to take someone from "what's a beat" to "I mixed a track," using blocks instead of a mouse-and-plugin DAW. No sheet music, no exam-style theory — the whole point is that someone with zero background can open this and have fun.
 
 Part of the Omega Mu Gamma Studio suite.
 
@@ -17,8 +17,8 @@ This section is honest about where the repo is today vs. the plan below it. Upda
 | App shell (`App.jsx`, `AppLayout.jsx`, routing) | ✅ Built | |
 | `Home.jsx`, `UnitPage.jsx`, `LessonPage.jsx`, `Shop.jsx` | ✅ Built | Pages exist and render; lesson *content* inside them is not wired to real lesson JSON yet |
 | `progressStore.js` (XP, coins, completed lessons, unit progress) | ✅ Built | Already diverged from early plan — see §6 |
-| `lessonStore.js` | ✅ Built | Currently just drives the companion's expression + dialogue bubble. Does **not** yet track lesson phase / attempts / user-placed blocks — that state machine still needs to be built |
-| `Companion.jsx` (the character) | ✅ Built | Base sprite set only — no outfit-based sprite swapping wired in yet, even though `equippedOutfit` exists in the store |
+| `lessonStore.js` | ⚠️ Built, needs rework | Currently drives a single companion's expression + dialogue bubble. Does **not** yet track lesson phase (now 6 phases, not 3) / attempts / user-placed blocks, and doesn't yet support two mascots at once — see §5 |
+| `Companion.jsx` (the character) | ⚠️ Built, needs rework | Single-mascot component — needs to become the twin system (Feel + Logic) described in §5. Base sprite set only; no outfit-based sprite swapping wired in yet, even though `equippedOutfit` exists in the store |
 | `data/units.js` | ✅ Built, needs expansion | Currently 5 units / 21 lessons. Target is 6 units / 75 lessons (§3) |
 | `data/shopItems.js` | ✅ Built | Wallpapers + gear, cosmetic-accent only (no alt sprites yet) |
 | Lesson JSON files (per-lesson content) | ❌ Not started | Zero lesson JSON files exist yet — only the unit/lesson-title index |
@@ -67,17 +67,20 @@ BlockBeats teaches the whole song, not just theory — which is why there's a 6t
 
 Units are **all unlocked from the start** — no hard gating. `requiredLevel` on a unit is cosmetic (dims/previews an under-leveled unit) and never blocks access. This is deliberate: not everyone comes for theory — some just want to build beats or learn mixing, and they shouldn't have to grind through Unit 1 to get there.
 
-### Lesson JSON schema
+### Lesson JSON schema — same 6 phases, every lesson
 
-Every lesson is a JSON file (`data/lessons/unit{N}/{N}-{M}.json`), read and rendered by the app — no hardcoded lesson content in components. Each lesson has 3 phases:
+Every lesson is a JSON file (`data/lessons/unit{N}/{N}-{M}.json`), read and rendered by the app. Because every lesson uses the *exact same* phase structure, a lesson JSON is almost entirely dialogue plus a pointer to what the mini DAW should show — no per-lesson component logic required. See §5 for the twins themselves.
 
-1. **`see_it_work`** — companion demonstrates the concept with a working example, dialogue delivered line-by-line (visual-novel style, click to advance), paired with a BTS view (piano roll / waveform / effect chain) showing the DAW-equivalent of what's happening.
-2. **`see_it_break`** — the same example, deliberately wrong, with an `error_explanation` for why it doesn't work.
-3. **`you_try`** — user drags blocks onto a timeline to rebuild or solve the concept, with escalating hints (`hint_1`, `hint_2`, then a `solution_reveal`) after repeated failed attempts.
+1. **`intro`** — a quick, concrete hook. Why should the player care about this concept at all? No theory yet — just makes it feel real (e.g. "this is why that drop hits so hard"). One twin only, whichever fits.
+2. **`explanation`** — the actual teaching. **Both twins always speak here, back to back** — Feel gives the intuitive/emotional metaphor first, then Logic gives the structural/technical one for the *same* concept. This back-and-forth contrast is the core teaching mechanic of the whole app.
+3. **`examples_bts`** — a concrete working example played out, with the mini DAW/BTS view open alongside it (piano roll / waveform / effect chain, whichever fits the unit) so the player can see and hear the concept at once.
+4. **`bad_example`** — the deliberately wrong version, plus an `error_explanation` for why it fails. (This is the old "See It Break" phase, unchanged in spirit.)
+5. **`test`** — the player drags blocks onto a timeline to rebuild or solve the concept, with escalating hints (`hint_1`, `hint_2`, then a `solution_reveal`) after repeated failed attempts. Required to complete the lesson.
+6. **`challenge`** — **optional, bonus XP only.** Not a harder version of Test — a small open-ended production task using what was just taught (e.g. "build a classical-feeling melody with today's tools"). Looser than Test: no single scripted solution, evaluated more like a mini free-play goal than strict validation.
 
-Validation isn't always exact-match: a `validation_mode` field per lesson picks between strict positional matching, order-only matching, or "musically correct" matching (e.g. accepting any valid diatonic substitute, not just the one scripted answer) — important once Unit 3+ lessons get more open-ended.
+Test's validation isn't always exact-match: a `validation_mode` field per lesson picks between strict positional matching, order-only matching, or "musically correct" matching (e.g. accepting any valid diatonic substitute, not just the one scripted answer) — important once Unit 3+ lessons get more open-ended. Challenge deliberately skips this in favor of a looser goal-check.
 
-Unit 6 lessons follow the same 3-phase shape but swap chord/rhythm blocks for **effect blocks** placed on a chain (EQ, compression, reverb, etc.), each with tweakable parameters — see §4.
+Unit 6 lessons follow the same 6-phase shape but swap chord/rhythm blocks for **effect blocks** placed on a chain (EQ, compression, reverb, etc.), each with tweakable parameters — see §4.
 
 ---
 
@@ -94,15 +97,25 @@ Practically, this means `BTSRenderer.js` / `PianoRoll.js` / `WaveformView.js` / 
 
 ---
 
-## 5. The Companion
+## 5. The Twins — Feel & Logic
 
-Currently `Companion.jsx` (not `BlockBeatsChan.jsx` — naming has already diverged from early planning docs, and that's fine, this README is the source of truth going forward).
+This replaces the single-companion model from earlier planning. **Not settled yet: names, gender/casting, and final personality details** — that's intentionally left to the studio's creative direction, not locked here. What *is* locked is the mechanic.
 
-- Sprite set: `teaching`, `excited`, `oops`, `thinking`, `frustrated`, `idle-sleeping` — driven entirely by `lessonStore`'s `expression` field via `say()` / `setExpression()`.
-- Outfit-based sprite swapping is **planned but not wired in** — `equippedOutfit` already exists in `progressStore`, but `Companion.jsx` doesn't consume it yet. When alt-art exists, follow the same override pattern used in PlusPlus-Chan.
-- Dialogue is delivered as a bubble next to the sprite, driven by the same store — this is the mechanism the visual-novel-style lesson dialogue should hook into.
+**The axis:** every concept in the syllabus gets explained twice, by two mascots with opposing but equally valid philosophies:
 
-Expression-from-lesson-event mapping (companion reacts to what's happening) still needs to be built as part of the lesson-flow state machine — right now `lessonStore` can be told what to show, but nothing yet decides what to tell it based on attempt count / correctness.
+- **Feel** — the intuitive, emotional, body-first explainer. Talks in metaphor, sensation, vibe. ("This chord feels like it's falling.")
+- **Logic** — the structural, technical explainer. Talks in pattern, function, why-it-works. ("This is the vi chord — it borrows the tonic's notes, which is why it still feels like home.")
+
+Neither twin is "the real one" or "the bonus one" — they always appear together in the `explanation` phase (§3), back to back, same concept, two lenses. This is deliberate: contrast is what makes a concept stick for a beginner, and it means every one of the 75 lessons needs **two** metaphors written for it, not one.
+
+**Art direction:** gothic ink-wash, modern take — muted/monochrome ink-wash technique with a pop of modern neon/color accent (rather than fully desaturated traditional ink wash). Distinct from the flat sprite-based style used elsewhere in the studio's Chan apps.
+
+**Open design questions, deliberately not decided here:**
+- Do Feel and Logic ever disagree or banter with each other, or do they always agree and just phrase things differently?
+- How many expressions does each twin need, and do they share an expression set or have their own?
+- Does the `bad_example` phase have a "twin opinion" on the failure (e.g. Logic explaining *why* it's wrong, Feel reacting to how *bad* it sounds), or is it presented more neutrally?
+
+**Current code reality:** the existing `Companion.jsx` is a single-mascot component (sprite + dialogue bubble driven by `lessonStore`). It needs to become two components (or one component with a `twin` prop) before any of this can be built — this is a rebuild, not an extension, of what exists today.
 
 ---
 
@@ -157,8 +170,8 @@ Roughly the order that unblocks the most downstream work first:
 
 1. **Audio foundation** — `audioEngine.js` (Tone.js singleton), `musicTheoryEngine.js` (chords/scales/progressions), wire a single chord to play on a button click.
 2. **Blocks + DnD** — block type definitions, palette, timeline as a drop target, basic exact-match validation.
-3. **Lesson state machine** — build out `lessonStore` (or a sibling store) to actually track phase/attempts/blocks, then wire `LessonCanvas`, `DialogueBox`, `PhaseIndicator`, `HintSystem` against it.
-4. **First real lesson** — pick one lesson from Unit 1, write its JSON, get all three phases working end-to-end with real audio and real validation. This is the proof that the whole pipeline works before scaling to 75.
+3. **Twins + lesson state machine** — rebuild `Companion.jsx` into the Feel/Logic twin system (§5), rework `lessonStore` (or a sibling store) to track the 6-phase structure (§3) plus attempts/blocks, then wire `LessonCanvas`, `DialogueBox`, `PhaseIndicator`, `HintSystem` against it.
+4. **First real lesson** — pick one lesson from Unit 1, write its JSON across all 6 phases, get it working end-to-end with real audio, both twins, and real Test validation. This is the proof that the whole pipeline works before scaling to 75.
 5. **BTS / mini DAW** — Konva renderers, starting with `PianoRoll` (chord/melody) and `WaveformView` (drums), built with both lesson-scoped and free-play modes in mind from the start (§4). `EffectChain` comes with Unit 6 mechanics.
 6. **Progression polish** — Domain Expansion, companion outfit-swapping, Shop wiring.
 7. **Content** — the other 74 lesson JSONs, sprite art for outfits, audio presets.
