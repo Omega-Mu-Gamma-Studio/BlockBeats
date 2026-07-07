@@ -1,0 +1,32 @@
+{
+  "id": "1-1",
+  "title": "What is a beat?",
+  "unit": "unit-1",
+  "bpm": 100,
+  "stepCount": 8,
+  "blockTypes": ["kick"],
+  "validationMode": "strict",
+  "intro": {
+    "dialogue": "Before a single note plays, every song you've ever loved already has one thing going: a pulse."
+  },
+  "explanation": {
+    "dialogue": "A beat is just a steady pulse - evenly spaced hits in time, like a heartbeat or a clock ticking. Everything else in a song hangs off that skeleton."
+  },
+  "example": {
+    "dialogue": "Here's the simplest possible pulse: one kick, spaced perfectly even. Hit play and feel it.",
+    "pattern": { "kick": [0, 2, 4, 6] }
+  },
+  "test": {
+    "dialogue": "Your turn. Drag the kick onto the grid so it lands in a steady, even pulse - four hits, same gap every time.",
+    "target": { "kick": [0, 2, 4, 6] },
+    "hints": [
+      "Try spacing the kicks evenly - the same gap between every hit.",
+      "Four kicks total, one on every other box: positions 1, 3, 5, and 7."
+    ]
+  },
+  "complete": {
+    "dialogue": "That's the pulse. Everything we build from here sits on top of it.",
+    "xpReward": 25,
+    "coinReward": 10
+  }
+}
