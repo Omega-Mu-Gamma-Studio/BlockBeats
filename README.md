@@ -19,7 +19,7 @@ This section is honest about where the repo is today vs. the plan below it. Upda
 | `progressStore.js` (XP, coins, completed lessons, unit progress) | ✅ Built | Already diverged from early plan — see §6 |
 | `lessonStore.js` | ⚠️ Built, needs rework | Currently drives a single companion's expression + dialogue bubble. Does **not** yet track lesson phase (now 6 phases, not 3) / attempts / user-placed blocks, and doesn't yet support two mascots at once — see §5 |
 | `Companion.jsx` (the character) | ⚠️ Built, needs rework | Single-mascot component — needs to become the twin system (Feel + Logic) described in §5. Base sprite set only; no outfit-based sprite swapping wired in yet, even though `equippedOutfit` exists in the store |
-| `data/units.js` | ✅ Built, needs expansion | Currently 5 units / 21 lessons. Target is 6 units / 75 lessons (§3) |
+| `data/units.js` | ✅ Built, needs expansion | Currently 5 units / 21 lessons. Full 6-unit / 75-lesson list is locked (§3) — still needs transcribing into this file |
 | `data/shopItems.js` | ✅ Built | Wallpapers + gear, cosmetic-accent only (no alt sprites yet) |
 | Lesson JSON files (per-lesson content) | ❌ Not started | Zero lesson JSON files exist yet — only the unit/lesson-title index |
 | `audioEngine.js`, `musicTheoryEngine.js`, `validationEngine.js` | ❌ Stub (0 bytes) | Core engines — nothing plays sound yet |
@@ -53,7 +53,7 @@ All of the above are already installed in `package.json`.
 
 ## 3. The Syllabus — 6 Units, 75 Lessons
 
-BlockBeats teaches the whole song, not just theory — which is why there's a 6th unit for production/mixing alongside the five music-writing units. Numbers below are lesson *counts per unit*; exact lesson titles still need to be drafted into `data/units.js` (currently only 21 of 75 exist as placeholders).
+BlockBeats teaches the whole song, not just theory — which is why there's a 6th unit for production/mixing alongside the five music-writing units.
 
 | # | Unit | Lessons | Teaches |
 |---|---|---|---|
@@ -66,6 +66,97 @@ BlockBeats teaches the whole song, not just theory — which is why there's a 6t
 | | **Total** | **75** | |
 
 Units are **all unlocked from the start** — no hard gating. `requiredLevel` on a unit is cosmetic (dims/previews an under-leveled unit) and never blocks access. This is deliberate: not everyone comes for theory — some just want to build beats or learn mixing, and they shouldn't have to grind through Unit 1 to get there.
+
+### Full Lesson List
+
+Titles + one-line "teaches" for all 75. Writing (dialogue, both twins' metaphors, actual JSON) comes later — this is the locked syllabus to write against. Every lesson here needs to support two genuinely different Feel/Logic metaphors before it gets written; if one doesn't fit cleanly when we get to it, flag it rather than force it.
+
+**Unit 1 — The Beat**
+1. What Is a Beat? — the pulse underneath every song, why your foot taps on its own
+2. Kick and Snare — the two-note skeleton of almost every groove
+3. Hi-Hats and Groove — filling the gaps between kick and snare
+4. Swing and Feel — why "on the grid" isn't the same as "in the pocket"
+5. Time Signatures 101 — counting in 4, counting in 3, why it changes everything
+6. Syncopation — hitting where you don't expect, and why it's exciting
+7. Ghost Notes — the notes you barely hear but definitely feel
+8. Velocity and Dynamics — loud hits vs. quiet hits, same pattern
+9. Drum Fills — how to signal "something's about to change"
+10. Genre Patterns: Hip-Hop vs. House — same kit, completely different feel
+11. Polyrhythm Intro — two patterns at once without falling apart
+12. Build Your First Loop — putting it all together into something that repeats
+
+**Unit 2 — The Bassline**
+1. Why Bass Matters — the note you feel in your chest before you hear it
+2. Root Notes — picking the one note that anchors everything
+3. Locking with the Kick — bass and kick as a single rhythmic unit
+4. Basslines with Movement — root notes that walk instead of sit still
+5. Walking Bass — a line that strolls between chords
+6. Octave Jumps — same note, different register, big energy shift
+7. Syncopated Bass — bass that dances around the beat instead of on it
+8. Call-and-Response: Bass and Kick — trading rhythmic ideas
+9. Genre Bass Styles — funk vs. trap vs. house low-end
+10. Bass as Harmonic Glue — how the bassline quietly defines the chord
+11. Sub-Bass vs. Mid-Bass — the production-side distinction between felt and heard
+
+**Unit 3 — Chords & Harmony**
+1. What Is a Chord? — three notes that become one idea
+2. Major vs. Minor — the two moods every chord starts from
+3. Chord Progressions — chords that lead somewhere
+4. Voicing and Inversions — same chord, rearranged, different feel
+5. Tension and Release — why some chords beg to resolve
+6. 7th Chords — adding one note, changing the whole flavor
+7. Extended Chords (9ths+) — jazzier, dreamier, more color
+8. Diatonic Chord Families — every chord that "belongs" in a key
+9. Secondary Dominants — borrowing tension from outside the key
+10. Modal Interchange — borrowing whole chords from a parallel key
+11. Chord Substitution — swapping one chord for a cousin that still works
+12. The Circle of Fifths — the map that explains why keys relate the way they do
+13. Key Changes and Modulation — moving the whole song to a new home
+14. Sus and Add Chords — chords that hover instead of settling
+15. Write Your First Progression — open creative capstone
+
+**Unit 4 — Melody**
+1. Scales as a Toolbox — the notes you're allowed to pick from
+2. Phrasing a Melody — where a musical sentence breathes
+3. Melodic Contour — the shape a melody traces up and down
+4. Motif and Repetition — a small idea, repeated until it's memorable
+5. Chord Tones vs. Passing Tones — notes that belong vs. notes just passing through
+6. Call and Response — a melody that asks, then answers
+7. Hooks and Earworms — why some four notes won't leave your head
+8. Counter-Melody — a second melody that complements the first
+9. Melody Over Changes — writing a line that tracks the chords underneath
+10. Rhythm of Melody vs. Harmony — melody doesn't have to move when the chords do
+11. Modes for Melody — dorian, mixolydian, and the moods they unlock
+12. Melodic Tension — using "wrong" notes on purpose
+13. Write a Full 8-Bar Melody — creative capstone
+
+**Unit 5 — Arrangement**
+1. Verse vs. Chorus Energy — why the chorus has to feel bigger
+2. Song Structure Maps — verse, chorus, bridge, and how they fit together
+3. Transitions and Fills — smoothing the seam between sections
+4. Layering and Density — when to add instruments, when to strip back
+5. Intro and Outro Design — how a song invites you in and lets you go
+6. Automation Basics — parameters that change over time, not just once
+7. Build-Ups — stacking tension before a drop or chorus
+8. Drops and Payoffs — the moment all that tension resolves
+9. Genre Arrangement Templates — how pop, EDM, and hip-hop structure differ
+10. The Bridge — the one section that's allowed to break the pattern
+11. Dynamics Across a Song — loud sections need quiet ones to mean anything
+12. Arrange a Full Track — creative capstone tying every unit together
+
+**Unit 6 — Production & Mix Basics**
+1. What Is Mixing? — turning a pile of tracks into one balanced song
+2. Gain Staging — getting levels right before anything else
+3. EQ Basics — carving space for each instrument to be heard
+4. Cutting vs. Boosting — two ways to shape a frequency, different results
+5. Compression Basics — taming the loud parts so the quiet parts survive
+6. Attack and Release — how compression's timing changes its personality
+7. Reverb and Space — making a mix feel like it's in a room
+8. Delay — echoes as rhythm, not just atmosphere
+9. Panning and Stereo Width — using left-right space on purpose
+10. Effect Chains — the order effects go in, and why it matters
+11. Genre Mixing Approaches — how a lo-fi mix differs from an EDM mix
+12. Your First Full Mixdown — creative capstone, mixing a complete track
 
 ### Lesson JSON schema — same 6 phases, every lesson
 
