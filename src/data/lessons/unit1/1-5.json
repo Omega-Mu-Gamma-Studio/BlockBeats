@@ -1,0 +1,53 @@
+{
+  "id": "1-5",
+  "title": "Time Signatures 101",
+  "unit": "unit-1",
+  "hasContent": false,
+  "bpm": 100,
+  "stepCount": 8,
+  "blockTypes": [],
+  "validationMode": "strict",
+  "intro": {
+    "speaker": "melody",
+    "dialogue": ""
+  },
+  "explanation": {
+    "melody": {
+      "dialogue": ""
+    },
+    "harmony": {
+      "dialogue": ""
+    }
+  },
+  "examples_bts": {
+    "speaker": "melody",
+    "dialogue": "",
+    "bts": "pianoRoll",
+    "pattern": {}
+  },
+  "bad_example": {
+    "speaker": "harmony",
+    "dialogue": "",
+    "error_explanation": "",
+    "pattern": {}
+  },
+  "test": {
+    "dialogue": "",
+    "target": {},
+    "hints": [
+      "",
+      ""
+    ]
+  },
+  "challenge": {
+    "speaker": "harmony",
+    "dialogue": "",
+    "goal": ""
+  },
+  "complete": {
+    "speaker": "melody",
+    "dialogue": "",
+    "xpReward": 25,
+    "coinReward": 10
+  }
+}

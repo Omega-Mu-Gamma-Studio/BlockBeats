@@ -65,11 +65,10 @@ const ItemCard = ({ item, level, equipped, onEquip }) => {
 
 const Shop = () => {
   const { level, equippedWallpaper, equippedOutfit, setWallpaper, setOutfit } = useProgress();
-  const { setExpression, setDialogue } = useLessonStore();
+  const { say } = useLessonStore();
 
   useEffect(() => {
-    setExpression('excited');
-    setDialogue("Spend it however you like. Good taste isn't extra credit, it's the job.");
+    say('melody', "Spend it however you like. Good taste isn't extra credit, it's the job.", 'excited');
   }, []);
 
   return (

@@ -1,8 +1,9 @@
-const LABELS = ['intro', 'learn', 'listen', 'try it', 'done'];
+const LABELS = ['intro', 'learn', 'watch', 'spot it', 'try it', 'bonus', 'done'];
 
-// Row of dots showing progress through the lesson's phases.
+// Row of dots showing progress through the lesson's phases (README §3:
+// intro, explanation, examples_bts, bad_example, test, challenge, complete).
 const PhaseIndicator = ({ phaseIndex, total }) => (
-  <div className="flex items-center justify-center gap-2 mb-6">
+  <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
     {Array.from({ length: total }, (_, i) => (
       <div key={i} className="flex flex-col items-center gap-1">
         <div

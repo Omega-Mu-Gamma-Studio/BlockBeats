@@ -17,20 +17,22 @@ This section is honest about where the repo is today vs. the plan below it. Upda
 | App shell (`App.jsx`, `AppLayout.jsx`, routing) | ✅ Built | |
 | `Home.jsx`, `UnitPage.jsx`, `LessonPage.jsx`, `Shop.jsx` | ✅ Built | Pages exist and render; lesson *content* inside them is not wired to real lesson JSON yet |
 | `progressStore.js` (XP, coins, completed lessons, unit progress) | ✅ Built | Already diverged from early plan — see §6 |
-| `lessonStore.js` | ⚠️ Built, needs rework | Currently drives a single companion's expression + dialogue bubble. Does **not** yet track lesson phase (now 6 phases, not 3) / attempts / user-placed blocks, and doesn't yet support two mascots at once — see §5 |
-| `Companion.jsx` (the character) | ⚠️ Built, needs rework | Single-mascot component — needs to become the Melody/Harmony twin system described in §5. No twin portrait assets exist yet (8 PNGs needed: 4 per twin) |
-| `data/units.js` | ✅ Built, needs expansion | Currently 5 units / 21 lessons. Full 6-unit / 75-lesson list is locked (§3) — still needs transcribing into this file |
+| `lessonStore.js` | ✅ Built | Twin-aware: tracks both companions' expressions, single-speaker dialogue, duo dialogue for `explanation`, plus the full 6-phase state machine, attempts, hints, and user-placed blocks |
+| `Companion.jsx` (the character) | ✅ Built | Twin system per §5 — `<Companion twin="melody" \| "harmony" />`. No twin portrait art exists yet (8 PNGs needed: 4 per twin), so it falls back to a CSS initial-avatar via `onError` until the ink-wash art lands |
+| `TwinBanter.jsx` | ✅ Built | Explanation-phase component — Melody's line, then Harmony's, revealed in sequence per §5's "Melody always speaks first" |
+| `data/units.js` | ✅ Built | Full 6-unit / 75-lesson list per §3, transcribed |
 | `data/shopItems.js` | ✅ Built | Wallpapers + gear, cosmetic-accent only (no alt sprites yet) |
-| Lesson JSON files (per-lesson content) | ❌ Not started | Zero lesson JSON files exist yet — only the unit/lesson-title index |
-| `audioEngine.js`, `musicTheoryEngine.js`, `validationEngine.js` | ❌ Stub (0 bytes) | Core engines — nothing plays sound yet |
-| Block components (`BlockPalette`, `Timeline`, `DroppedBlock`, etc.) | ❌ Stub (0 bytes) | No drag-and-drop yet despite `@dnd-kit` being installed |
-| BTS / Konva rendering (`PianoRoll`, `WaveformView`, `EffectChain`, `BTSRenderer`) | ❌ Stub (0 bytes) | This is also the planned home of the mini DAW (§4) |
-| Lesson-flow components (`DialogueBox`, `HintSystem`, `PhaseIndicator`, `LessonCanvas`) | ❌ Stub (0 bytes) | |
+| Lesson JSON files (per-lesson content) | ⚠️ Scaffolded | All 75 exist with the full 6-phase schema and `hasContent: false`. Only `1-1.json` has real content (`hasContent: true`) — proof the pipeline works end to end, both twins included. Writing the other 74 is the remaining work; nothing else needs to change when you do |
+| `audioEngine.js`, `validationEngine.js` | ✅ Built | Play sound / validate test submissions |
+| `musicTheoryEngine.js`, `dawEquivalent.js` | ❌ Stub (0 bytes) | |
+| Block components (`BlockPalette`, `Timeline`, `DroppedBlock`, `BlockItem`) | ✅ Built | Drag-and-drop works via `@dnd-kit` |
+| BTS / Konva rendering (`PianoRoll`, `WaveformView`, `EffectChain`, `BTSRenderer`) | ❌ Stub (0 bytes) | This is also the planned home of the mini DAW (§4). `LessonPage.jsx` renders a placeholder panel in its place for now |
+| Lesson-flow components (`DialogueBox`, `HintSystem`, `PhaseIndicator`, `LessonCanvas`) | ✅ Built | `PhaseIndicator` updated for the 7-step (6-phase + complete) machine |
 | `DomainExpansion.jsx` (level-up celebration) | ❌ Stub (0 bytes) | |
 | `audioStore.js` | ❌ Stub (0 bytes) | |
 | Dependencies (tone, konva, dnd-kit, framer-motion, canvas-confetti, zustand) | ✅ Installed | package.json already matches the target stack |
 
-**tl;dr:** the shell, progression system, and companion character are real. The actual "game" — blocks, audio, lessons, BTS/DAW — is unbuilt. That's the work ahead.
+**tl;dr:** the shell, progression system, twin companion system, and the full 75-lesson scaffold are real and wired end to end — Lesson 1 proves it with real audio, both twins, and real Test validation. What's left: writing the other 74 lessons' dialogue/patterns, and building the BTS/mini-DAW (Konva) rendering that's still a placeholder panel.
 
 ---
 

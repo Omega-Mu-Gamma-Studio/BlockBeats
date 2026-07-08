@@ -8,13 +8,12 @@ const UnitPage = () => {
   const { unitId } = useParams();
   const navigate = useNavigate();
   const { isLessonComplete } = useProgress();
-  const { setExpression, setDialogue } = useLessonStore();
+  const { say } = useLessonStore();
 
   const unit = UNITS.find((u) => u.id === unitId);
 
   useEffect(() => {
-    setExpression('teaching');
-    setDialogue(unit ? `Pick a track. We'll take it from the top.` : '');
+    say('harmony', unit ? `Pick a track. We'll take it from the top.` : '', 'teaching');
   }, [unitId]);
 
   if (!unit) {

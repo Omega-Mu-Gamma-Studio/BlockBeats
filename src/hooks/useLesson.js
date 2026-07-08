@@ -5,11 +5,19 @@ import { useProgress } from './useProgress';
 import { getLessonContent } from '../services/lessonService';
 import { validatePattern, countMisplaced } from '../engines/validationEngine';
 
-// Drives a single lesson's phase state machine: intro -> explanation ->
-// example -> test -> complete. Currently the shape Unit 1 lessons use;
-// bad_example / challenge / BTS phases from the README's full 6-phase
-// spec aren't wired up yet (see flagged inconsistency).
-export const PHASES = ['intro', 'explanation', 'example', 'test', 'complete'];
+// Drives a single lesson's phase state machine, the full 6-phase shape
+// from README §3: intro -> explanation -> examples_bts -> bad_example ->
+// test -> challenge -> complete. `challenge` is optional/bonus-XP-only and
+// can be skipped straight to `complete`.
+export const PHASES = [
+  'intro',
+  'explanation',
+  'examples_bts',
+  'bad_example',
+  'test',
+  'challenge',
+  'complete',
+];
 
 export function useLesson(lessonId) {
   const navigate = useNavigate();
@@ -19,7 +27,7 @@ export function useLesson(lessonId) {
     resetLesson, nextPhase, setPhaseIndex,
     placeBlock, removeBlock, clearBlocks,
     registerAttempt, showNextHint,
-    setExpression, setDialogue,
+    say, setDuo,
   } = useLessonStore();
 
   const lesson = useMemo(() => getLessonContent(lessonId), [lessonId]);
@@ -31,21 +39,33 @@ export function useLesson(lessonId) {
 
   useEffect(() => {
     if (!lesson) return;
+
     if (phase === 'intro') {
-      setExpression('teaching');
-      setDialogue(lesson.intro?.dialogue || '');
+      const speaker = lesson.intro?.speaker || 'melody';
+      say(speaker, lesson.intro?.dialogue || '', 'teaching');
     } else if (phase === 'explanation') {
-      setExpression('thinking');
-      setDialogue(lesson.explanation?.dialogue || '');
-    } else if (phase === 'example') {
-      setExpression('idle');
-      setDialogue(lesson.example?.dialogue || '');
+      // Both twins always speak here, Melody first (README §5) — this is
+      // the core teaching mechanic, so it gets its own duo dialogue mode
+      // instead of the single-speaker `say`.
+      setDuo(
+        lesson.explanation?.melody?.dialogue || '',
+        lesson.explanation?.harmony?.dialogue || '',
+        { melody: 'teaching', harmony: 'teaching' }
+      );
+    } else if (phase === 'examples_bts') {
+      const speaker = lesson.examples_bts?.speaker || 'melody';
+      say(speaker, lesson.examples_bts?.dialogue || '', speaker === 'harmony' ? 'analyzing' : 'teaching');
+    } else if (phase === 'bad_example') {
+      const speaker = lesson.bad_example?.speaker || 'harmony';
+      say(speaker, lesson.bad_example?.dialogue || '', speaker === 'harmony' ? 'analyzing' : 'thinking');
     } else if (phase === 'test') {
-      setExpression('teaching');
-      setDialogue(lesson.test?.dialogue || '');
+      say('melody', lesson.test?.dialogue || '', 'excited');
+    } else if (phase === 'challenge') {
+      const speaker = lesson.challenge?.speaker || 'harmony';
+      say(speaker, lesson.challenge?.dialogue || '', 'intrigued');
     } else if (phase === 'complete') {
-      setExpression('excited');
-      setDialogue(lesson.complete?.dialogue || '');
+      const speaker = lesson.complete?.speaker || 'melody';
+      say(speaker, lesson.complete?.dialogue || '', 'excited');
     }
   }, [phase, lesson]);
 
@@ -63,14 +83,24 @@ export function useLesson(lessonId) {
     const correct = validatePattern(placedBlocks, targetPattern, lesson.validationMode);
     registerAttempt();
     if (correct) {
-      nextPhase();
-      completeLesson(lessonId, lesson.complete?.xpReward, lesson.complete?.coinReward);
+      nextPhase(); // -> challenge (optional)
       return { correct: true };
     }
     const diff = countMisplaced(placedBlocks, targetPattern);
     if (attempts + 1 >= 2 && hintsShown < 2) showNextHint();
     return { correct: false, ...diff };
   };
+
+  // Challenge is bonus-only (README §3) — skipping it still finishes the
+  // lesson and awards the base xp/coin reward.
+  const finishLesson = () => {
+    setPhaseIndex(PHASES.indexOf('complete'));
+    completeLesson(lessonId, lesson?.complete?.xpReward, lesson?.complete?.coinReward);
+  };
+
+  const skipChallenge = () => finishLesson();
+
+  const completeChallenge = () => finishLesson();
 
   return {
     lesson,
@@ -87,6 +117,8 @@ export function useLesson(lessonId) {
     nextPhase,
     setPhaseIndex,
     submitTest,
+    skipChallenge,
+    completeChallenge,
     goHome: () => navigate('/'),
   };
 }

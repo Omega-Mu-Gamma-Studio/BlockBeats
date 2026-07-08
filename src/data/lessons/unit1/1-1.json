@@ -1,30 +1,51 @@
 {
   "id": "1-1",
-  "title": "What is a beat?",
+  "title": "What Is a Beat?",
   "unit": "unit-1",
+  "hasContent": true,
   "bpm": 100,
   "stepCount": 8,
   "blockTypes": ["kick"],
   "validationMode": "strict",
   "intro": {
-    "dialogue": "Before a single note plays, every song you've ever loved already has one thing going: a pulse."
+    "speaker": "melody",
+    "dialogue": "Before a single note plays, every song you've ever loved already has one thing going: a pulse. Feel that? That's what we're starting with."
   },
   "explanation": {
-    "dialogue": "A beat is just a steady pulse - evenly spaced hits in time, like a heartbeat or a clock ticking. Everything else in a song hangs off that skeleton."
+    "melody": {
+      "dialogue": "A beat is a heartbeat, ja? Steady, warm, alive — it's the thing your foot taps to before you even notice you're doing it. Close your eyes and it just... pulls you along."
+    },
+    "harmony": {
+      "dialogue": "To be precise: a beat is an evenly spaced pulse in time. Same gap, every hit, no exceptions. My sister feels it as a heartbeat — I measure it as a grid. Both descriptions are correct. We'll use the grid."
+    }
   },
-  "example": {
-    "dialogue": "Here's the simplest possible pulse: one kick, spaced perfectly even. Hit play and feel it.",
+  "examples_bts": {
+    "speaker": "melody",
+    "dialogue": "Here's the simplest possible pulse: one kick, spaced perfectly even. Hit play and feel it lock in.",
+    "bts": "waveform",
     "pattern": { "kick": [0, 2, 4, 6] }
   },
+  "bad_example": {
+    "speaker": "harmony",
+    "dialogue": "Now the wrong version — same four kicks, uneven spacing. Listen closely.",
+    "error_explanation": "The gaps aren't equal — two kicks land close together, then there's a long stretch of nothing. Your ear notices the inconsistency even if you can't say why. That's a broken pulse, not a beat.",
+    "pattern": { "kick": [0, 1, 4, 5] }
+  },
   "test": {
-    "dialogue": "Your turn. Drag the kick onto the grid so it lands in a steady, even pulse - four hits, same gap every time.",
+    "dialogue": "Your turn. Drag the kick onto the grid so it lands in a steady, even pulse — four hits, same gap every time.",
     "target": { "kick": [0, 2, 4, 6] },
     "hints": [
       "Try spacing the kicks evenly - the same gap between every hit.",
       "Four kicks total, one on every other box: positions 1, 3, 5, and 7."
     ]
   },
+  "challenge": {
+    "speaker": "harmony",
+    "dialogue": "If you want to push further: try a pulse that isn't every-other-box. Still even, just a different gap. See what still feels steady and what starts to feel broken.",
+    "goal": "Build any evenly-spaced kick pattern that isn't the positions 0-2-4-6 you just used."
+  },
   "complete": {
+    "speaker": "melody",
     "dialogue": "That's the pulse. Everything we build from here sits on top of it.",
     "xpReward": 25,
     "coinReward": 10

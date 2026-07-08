@@ -17,13 +17,12 @@ const GREETINGS = [
 const Home = () => {
   const navigate = useNavigate();
   const { level, completedLessons, equippedWallpaper, getUnitProgress } = useProgress();
-  const { setExpression, setDialogue } = useLessonStore();
+  const { say } = useLessonStore();
 
   const wallpaper = WALLPAPERS.find((w) => w.id === equippedWallpaper) || WALLPAPERS[0];
 
   useEffect(() => {
-    setExpression('idle');
-    setDialogue(GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
+    say('melody', GREETINGS[Math.floor(Math.random() * GREETINGS.length)], 'neutral');
   }, []);
 
   const totalLessons = UNITS.reduce((sum, u) => sum + u.lessons.length, 0);
@@ -49,7 +48,7 @@ const Home = () => {
               welcome back to the studio
             </h1>
           </div>
-          <Companion size="lg" align="right" />
+          <Companion twin="melody" size="lg" align="right" />
         </div>
       </section>
 
