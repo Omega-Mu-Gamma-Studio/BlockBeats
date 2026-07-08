@@ -9,6 +9,7 @@ import DialogueBox from '../components/lesson/DialogueBox';
 import PhaseIndicator from '../components/lesson/PhaseIndicator';
 import LessonCanvas from '../components/lesson/LessonCanvas';
 import TransportBar from '../components/ui/TransportBar';
+import BTSRenderer from '../components/bts/BTSRenderer';
 import { useLesson } from '../hooks/useLesson';
 import { useAudio } from '../hooks/useAudio';
 
@@ -92,15 +93,6 @@ const PatternPlayer = ({ lesson, pattern, accent = 'amber' }) => {
   );
 };
 
-// BTS/mini-DAW panel is Konva-based and not built yet (README §4) — this
-// placeholder keeps the layout the finished lesson will use so nothing
-// needs to be reshuffled once PianoRoll/WaveformView land.
-const BTSPlaceholder = ({ kind }) => (
-  <div className="border-2 border-dashed border-studio-border rounded-xl w-full py-8 text-ink-muted text-xs text-center">
-    BTS view ({kind || 'waveform'}) — mini DAW panel coming soon
-  </div>
-);
-
 const LessonPage = () => {
   const { lessonId } = useParams();
   const navigate = useNavigate();
@@ -175,8 +167,15 @@ const LessonPage = () => {
               <div className="w-full flex flex-col items-center gap-5">
                 <Companion twin={lesson.examples_bts?.speaker || 'melody'} size="sm" align="left" showBubble={false} />
                 <DialogueBox dialogue={lesson.examples_bts?.dialogue} />
-                <PatternPlayer lesson={lesson} pattern={lesson.examples_bts?.pattern} accent="amber" />
-                <BTSPlaceholder kind={lesson.examples_bts?.bts} />
+                <BTSRenderer
+                  kind={lesson.examples_bts?.bts || 'waveform'}
+                  mode="lesson"
+                  blockIds={lesson.blockTypes}
+                  stepCount={lesson.stepCount}
+                  bpm={lesson.bpm}
+                  initialPattern={lesson.examples_bts?.pattern}
+                  readOnly
+                />
                 <button
                   onClick={nextPhase}
                   className="rounded-full bg-amber text-studio-bg text-sm font-medium px-6 py-2 hover:bg-amber-soft transition-colors flex items-center gap-1"

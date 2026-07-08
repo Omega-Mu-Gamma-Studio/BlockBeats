@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import UnitPage from './pages/UnitPage';
 import LessonPage from './pages/LessonPage';
 import Shop from './pages/Shop';
+import FreePlay from './pages/FreePlay';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="unit/:unitId" element={<UnitPage />} />
           <Route path="lesson/:lessonId" element={<LessonPage />} />
           <Route path="shop" element={<Shop />} />
+          <Route path="freeplay" element={<FreePlay />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

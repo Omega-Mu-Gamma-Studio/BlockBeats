@@ -5,9 +5,14 @@ const TopBar = () => {
   const { xp, coins, level } = useProgress();
   return (
     <header className="flex items-center justify-between px-6 h-14 border-b border-studio-border bg-studio-panel/80 backdrop-blur-sm sticky top-0 z-20">
-      <Link to="/" className="font-display text-lg tracking-tight text-ink">
-        blockbeats
-      </Link>
+      <div className="flex items-center gap-5">
+        <Link to="/" className="font-display text-lg tracking-tight text-ink">
+          blockbeats
+        </Link>
+        <Link to="/freeplay" className="text-xs text-ink-muted hover:text-ink-soft flex items-center gap-1">
+          <i className="ti ti-wave-square" aria-hidden="true" /> studio
+        </Link>
+      </div>
       <div className="flex items-center gap-3 text-sm">
         <div className="flex items-center gap-1.5 rounded-full bg-studio-surface px-3 py-1 border border-studio-border">
           <i className="ti ti-bolt text-amber" aria-hidden="true" />
