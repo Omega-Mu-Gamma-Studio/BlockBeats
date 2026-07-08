@@ -47,7 +47,12 @@ export async function playPattern(pattern, { stepCount, bpm = 100, onStep } = {}
     (time, s) => {
       Object.keys(pattern).forEach((blockId) => {
         if (pattern[blockId]?.has(s)) {
-          players[blockId]?.start(time);
+          const p = players[blockId];
+          // Sample files are still 0-byte placeholders (public/audio/drums),
+          // same as the sprite PNGs — same guard triggerSample() uses below,
+          // just missing here. Without it this throws instead of just
+          // staying silent once real samples are missing.
+          if (p?.loaded) p.start(time);
         }
       });
       Tone.Draw.schedule(() => onStep?.(s), time);
