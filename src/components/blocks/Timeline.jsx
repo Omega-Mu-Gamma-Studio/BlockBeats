@@ -38,7 +38,13 @@ const Timeline = ({ stepCount, placedBlocks, currentStep, onRemove }) => {
   };
 
   return (
-    <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${stepCount}, minmax(0, 1fr))` }}>
+    // w-full is load-bearing here: the parent is a centered flex column
+    // (items-center), which sizes children to content instead of
+    // stretching them. Without an explicit width, minmax(0, 1fr) columns
+    // have nothing to distribute space within, so the whole grid collapses
+    // to the size of its smallest content instead of rendering as an
+    // actual drop-target grid.
+    <div className="grid gap-2 w-full" style={{ gridTemplateColumns: `repeat(${stepCount}, minmax(0, 1fr))` }}>
       {Array.from({ length: stepCount }, (_, step) => (
         <StepCell
           key={step}
