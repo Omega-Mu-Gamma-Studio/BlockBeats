@@ -5,7 +5,11 @@ export const KONVA_THEME = {
   bgDeep: '#15110d',
   bgPanel: '#1f1812',
   surface: '#2a2018',
-  surfaceAlt: '#241b13',
+  // Was '#241b13' — almost indistinguishable from bgPanel (#1f1812), so
+  // empty grid cells were rendering nearly invisible. `surface` (#2a2018)
+  // is the same tone used for the test-phase Timeline's empty cells, so
+  // this also keeps the two grids visually consistent.
+  surfaceAlt: '#2a2018',
   border: 'rgba(245, 234, 217, 0.12)',
   borderStrong: 'rgba(245, 234, 217, 0.22)',
   textMuted: '#8a7d6b',

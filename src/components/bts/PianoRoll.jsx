@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Stage, Layer, Rect, Text } from 'react-konva';
+import { Stage, Layer, Rect, Text, Circle } from 'react-konva';
 import { CHORD_BLOCKS, CHORD_ORDER, MELODY_BLOCKS, MELODY_ORDER } from '../../data/pitchedBlocks';
 import { useSynth } from '../../hooks/useSynth';
 import TransportBar from '../ui/TransportBar';
@@ -77,21 +77,36 @@ const PianoRoll = ({
                 const block = BLOCKS[blockId];
                 const active = pattern[blockId]?.has(step);
                 const isPlayhead = currentStep === step;
+                const x = LABEL_W + step * (CELL + GAP);
+                const y = row * (CELL + GAP);
                 return (
-                  <Rect
-                    key={`${blockId}-${step}`}
-                    x={LABEL_W + step * (CELL + GAP)}
-                    y={row * (CELL + GAP)}
-                    width={CELL}
-                    height={CELL}
-                    cornerRadius={8}
-                    fill={active ? block.color : T.surfaceAlt}
-                    opacity={active ? (isPlayhead ? 1 : 0.85) : isPlayhead ? 0.7 : 1}
-                    stroke={isPlayhead ? block.color : T.border}
-                    strokeWidth={isPlayhead ? 2 : 1}
-                    onClick={() => toggle(blockId, step)}
-                    onTap={() => toggle(blockId, step)}
-                  />
+                  <>
+                    <Rect
+                      key={`${blockId}-${step}`}
+                      x={x}
+                      y={y}
+                      width={CELL}
+                      height={CELL}
+                      cornerRadius={8}
+                      fill={active ? block.color : T.surfaceAlt}
+                      opacity={active ? (isPlayhead ? 1 : 0.85) : isPlayhead ? 0.7 : 1}
+                      stroke={isPlayhead ? block.color : active ? T.border : T.borderStrong}
+                      strokeWidth={isPlayhead ? 2 : 1}
+                      dash={active ? undefined : [4, 4]}
+                      onClick={() => toggle(blockId, step)}
+                      onTap={() => toggle(blockId, step)}
+                    />
+                    {!active && (
+                      <Circle
+                        key={`${blockId}-${step}-dot`}
+                        x={x + CELL / 2}
+                        y={y + CELL / 2}
+                        radius={2.5}
+                        fill={T.textMuted}
+                        listening={false}
+                      />
+                    )}
+                  </>
                 );
               })
             )}

@@ -7,13 +7,18 @@ const StepCell = ({ step, isDownbeat, isPlayhead, occupant, onRemove }) => {
   return (
     <div
       ref={setNodeRef}
-      className={`relative aspect-square rounded-xl border transition-colors ${
-        isOver ? 'border-amber bg-amber/10' : 'border-studio-border bg-studio-surface/60'
+      className={`relative aspect-square rounded-xl border transition-colors flex items-center justify-center ${
+        isOver
+          ? 'border-amber bg-amber/10'
+          : occupant
+          ? 'border-studio-border bg-studio-surface/60'
+          : 'border-dashed border-studio-border-strong bg-studio-surface/40'
       } ${isDownbeat ? 'ring-1 ring-inset ring-studio-border-strong' : ''}`}
     >
       {isPlayhead && (
         <div className="absolute inset-0 rounded-xl bg-amber/20 ring-2 ring-amber pointer-events-none" />
       )}
+      {!occupant && !isOver && <span className="w-1.5 h-1.5 rounded-full bg-ink-muted/50 pointer-events-none" />}
       <div className="absolute inset-1">
         {occupant && <DroppedBlock blockId={occupant} onRemove={() => onRemove(occupant, step)} />}
       </div>
